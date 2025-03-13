@@ -4,6 +4,7 @@ import './globals.css';
 import Navbar from '../../components/Navbar';
 import { ClerkProvider } from '@clerk/nextjs';
 import QueryProvider from './providers/QueryProvider';
+import { Suspense } from 'react';
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
@@ -33,7 +34,7 @@ export default function RootLayout({
           >
             <Navbar />
             <div className="px-4 md:px-8 lg:px-16 lx:px-32 2xl:px-64">
-              {children}
+              <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
             </div>
           </body>
         </html>
