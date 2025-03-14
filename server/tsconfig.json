@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "module": "commonjs", // Use commonjs for Node.js compatibility
+    "target": "ESNext", // Use modern JavaScript features
+    "moduleResolution": "Node", // Resolve modules like Node.js
+    "esModuleInterop": true, // Allow interop with CommonJS modules
+    "skipLibCheck": true, // Skip type checking of declaration files
+    "outDir": "./dist", // Output directory for compiled JS files
+    "rootDir": "./src", // Root directory for your source files
+    "resolveJsonModule": true, // Allow importing JSON files
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["src/**/*"]
+}
