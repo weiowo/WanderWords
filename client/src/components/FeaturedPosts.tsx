@@ -26,7 +26,7 @@ const fetchPost = async (): Promise<FetchPostResponse> => {
   return res.data;
 };
 
-const FeaturedPosts: React.FC = () => {
+export default function FeaturedPosts() {
   const router = useRouter();
   const { isPending, error, data } = useQuery({
     queryKey: ['featuredPosts'],
@@ -110,6 +110,4 @@ const FeaturedPosts: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default FeaturedPosts;
+}
