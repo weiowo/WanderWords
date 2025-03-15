@@ -4,7 +4,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth, useUser } from '@clerk/clerk-react';
 import { toast } from 'react-toastify';
 
-// Define types for the comment and API response
 interface CommentType {
   _id: string;
   desc: string;
@@ -12,12 +11,9 @@ interface CommentType {
   user: {
     img: string;
     username: string;
+    clerkUserId: string;
   };
 }
-
-// interface CommentsResponse {
-//   comments: CommentType[];
-// }
 
 interface NewComment {
   desc: string;
@@ -73,7 +69,6 @@ const Comments: React.FC<CommentsProps> = ({ postId }) => {
     const data: NewComment = {
       desc: formData.get('desc') as string,
     };
-
     mutation.mutate(data);
   };
 
@@ -109,6 +104,7 @@ const Comments: React.FC<CommentsProps> = ({ postId }) => {
                 user: {
                   img: user?.imageUrl || '',
                   username: user?.username || '',
+                  clerkUserId: user?.id || '',
                 },
               }}
             />

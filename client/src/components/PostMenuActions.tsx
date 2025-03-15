@@ -5,24 +5,24 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
+import { Star, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 
 type Post = {
   _id: string;
   slug?: string;
   isFeatured?: boolean;
-  user: { username: string };
-};
-
-type PostMenuActionsProps = {
-  post: Post;
+  user: { username: string; _id: string; clerkUserId: string };
 };
 
 export default function PostMenuActions({ post }: { post: Post }) {
   const { user } = useUser();
+  console.log('user', user);
   const { getToken } = useAuth();
   const router = useRouter();
-  const queryClient = useQueryClient();
+  const [isFeatured, setIsFeatured] = useState(post.isFeatured || false); // State to track if the post is featured
 
+  const queryClient = useQueryClient();
   const {
     data: savedPosts,
     isPending,
@@ -90,6 +90,7 @@ export default function PostMenuActions({ post }: { post: Post }) {
       );
     },
     onSuccess: () => {
+      setIsFeatured((prev) => !prev);
       queryClient.invalidateQueries({ queryKey: ['post', post.slug] });
     },
     onError: (error: any) => {
@@ -109,10 +110,12 @@ export default function PostMenuActions({ post }: { post: Post }) {
           className="flex items-center gap-2 py-2 text-sm cursor-pointer"
           onClick={() => saveMutation.mutate()}
         >
+          <Star
+            fill={isSaved ? '#ffd900' : 'none'}
+            color={isSaved ? '#ffd900' : 'black'}
+            size={22}
+          />
           <span>{isSaved ? 'Unsave' : 'Save'} this Post</span>
-          {saveMutation.isPending && (
-            <span className="text-xs">(in progress)</span>
-          )}
         </div>
       )}
       {isAdmin && (
@@ -120,17 +123,18 @@ export default function PostMenuActions({ post }: { post: Post }) {
           className="flex items-center gap-2 py-2 text-sm cursor-pointer"
           onClick={() => featureMutation.mutate()}
         >
-          <span>Feature</span>
-          {featureMutation.isPending && (
+          <span>{isFeatured ? 'Unfeature' : 'Feature'} this Post</span>
+          {/* {featureMutation.isPending && (
             <span className="text-xs">(in progress)</span>
-          )}
+          )} */}
         </div>
       )}
-      {user && (post.user.username === user.username || isAdmin) && (
+      {user && (post.user.clerkUserId === user.id || isAdmin) && (
         <div
           className="flex items-center gap-2 py-2 text-sm cursor-pointer"
           onClick={() => deleteMutation.mutate()}
         >
+          <Trash2 color="black" size={22} />
           <span>Delete this Post</span>
           {deleteMutation.isPending && (
             <span className="text-xs">(in progress)</span>

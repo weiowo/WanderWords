@@ -5,18 +5,17 @@ import Search from './Search';
 
 const SideMenu = () => {
   const router = useRouter();
+  const sort = useSearchParams().get('sort');
+  const cat = useSearchParams().get('cat');
 
-  // Define types for event handlers
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (useSearchParams().get('sort') !== e.target.value) {
-      // Update the query parameter with the new value
+    if (sort !== e.target.value) {
       router.push(`${window.location.pathname}?sort=${e.target.value}`);
     }
   };
 
   const handleCategoryChange = (category: string) => {
-    if (useSearchParams().get('cat') !== category) {
-      // Update the query parameter with the new category
+    if (cat !== category) {
       router.push(`${window.location.pathname}?cat=${category}`);
     }
   };

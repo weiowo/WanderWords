@@ -8,6 +8,7 @@ import axios from 'axios';
 interface User {
   img: string;
   username: string;
+  clerkUserId: string;
 }
 
 interface CommentType {
@@ -23,6 +24,7 @@ interface CommentProps {
 }
 
 export default function Comment({ comment, postId }: CommentProps) {
+  console.log('comment', comment);
   const { user } = useUser();
   const { getToken } = useAuth();
   const role = user?.publicMetadata?.role;
@@ -63,19 +65,20 @@ export default function Comment({ comment, postId }: CommentProps) {
           />
         )}
         <span className="font-medium">{comment.user.username}</span>
+        <span className="font-medium">{user?.username}</span>
+
         <span className="text-sm text-gray-500">
           {format(comment.createdAt)}
         </span>
-        {user &&
-          (comment.user.username === user.username || role === 'admin') && (
-            <span
-              className="text-xs text-red-300 hover:text-red-500 cursor-pointer"
-              onClick={() => mutation.mutate()}
-            >
-              delete
-              {mutation.isPending && <span>(in progress)</span>}
-            </span>
-          )}
+        {user && (comment.user.clerkUserId === user.id || role === 'admin') && (
+          <span
+            className="text-xs text-red-300 hover:text-red-500 cursor-pointer"
+            onClick={() => mutation.mutate()}
+          >
+            {/* delete */}
+            {mutation.isPending ? 'deleting' : 'delete'}
+          </span>
+        )}
       </div>
       <div className="mt-4">
         <p>{comment.desc}</p>

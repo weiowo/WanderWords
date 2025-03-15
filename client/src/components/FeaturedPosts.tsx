@@ -32,6 +32,7 @@ export default function FeaturedPosts() {
     queryKey: ['featuredPosts'],
     queryFn: fetchPost,
   });
+  console.log('featured posts', data);
 
   if (isPending) return <p>Loading...</p>;
   if (error) return <p>Something went wrong! {error.message}</p>;

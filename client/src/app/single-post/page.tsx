@@ -1,75 +1,91 @@
+'use client';
 import Link from 'next/link';
 import Comments from '@/components/Comments';
 import Search from '@/components/Search';
 import PostMenuActions from '@/components/PostMenuActions';
-
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { GetServerSideProps } from 'next';
 import { format } from 'timeago.js';
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
 
-type User = {
-  username: string;
-  img?: string;
+// type User = {
+//   username: string;
+//   img?: string;
+// };
+
+// type Post = {
+//   _id: string;
+//   title: string;
+//   desc: string;
+//   img?: string;
+//   createdAt: string;
+//   user: User;
+//   category: string;
+// };
+
+// export const getServerSideProps: GetServerSideProps = async (context) => {
+//   const { slug } = context.params as { slug: string };
+
+//   try {
+//     const res = await axios.get(
+//       `${process.env.NEXT_PUBLIC_API_URL}/posts/${slug}`,
+//     );
+//     return { props: { post: res.data } };
+//   } catch (error) {
+//     return { props: { post: null } };
+//   }
+// };
+
+const fetchSinglePost = async (slug: string) => {
+  console.log('fetch query', slug);
+  const res = axios.get(`${process.env.NEXT_PUBLIC_API_URL}/posts/${slug}`);
+  return (await res).data;
 };
 
-type Post = {
-  _id: string;
-  title: string;
-  desc: string;
-  img?: string;
-  createdAt: string;
-  user: User;
-  category: string;
-};
+export default function SinglePost() {
+  //   if (!post) return <p>Post not found!</p>;
+  const params = useSearchParams()?.get('slug') || '';
+  console.log('ue', useSearchParams(), params);
+  const { isPending, error, data } = useQuery({
+    queryKey: ['post', params],
+    queryFn: () => fetchSinglePost(params as string),
+  });
 
-type SinglePostPageProps = {
-  post: Post | null;
-};
+  if (isPending) return 'loading';
+  if (error) return 'something went wrong' + error.message;
+  if (!data) return 'post not found';
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { slug } = context.params as { slug: string };
-
-  try {
-    const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/posts/${slug}`,
-    );
-    return { props: { post: res.data } };
-  } catch (error) {
-    return { props: { post: null } };
-  }
-};
-
-const SinglePostPage: React.FC<SinglePostPageProps> = ({ post }) => {
-  if (!post) return <p>Post not found!</p>;
-
+  console.log('single data', data);
   return (
     <div className="flex flex-col gap-8">
       {/* Detail */}
       <div className="flex gap-8">
         <div className="lg:w-3/5 flex flex-col gap-8">
           <h1 className="text-xl md:text-3xl xl:text-4xl 2xl:text-5xl font-semibold">
-            {post.title}
+            {data.title}
           </h1>
           <div className="flex items-center gap-2 text-gray-400 text-sm">
             <span>Written by</span>
             <Link href="#" className="text-blue-800">
-              {post.user.username}
+              {data.user.username}
             </Link>
             <span>on</span>
             <Link href="#" className="text-blue-800">
-              {post.category}
+              {data.category}
             </Link>
-            <span>{format(post.createdAt)}</span>
+            <span>{format(data.createdAt)}</span>
           </div>
-          <p className="text-gray-500 font-medium">{post.desc}</p>
+          <p className="text-gray-500 font-medium">{data.desc}</p>
+          <div dangerouslySetInnerHTML={{ __html: data.content }} />
         </div>
-        {post.img && (
+        {data.img && (
           <div className="hidden lg:block w-2/5">
             <Image
               alt="post-img"
-              src={post.img}
+              src={data.img}
               width={600}
+              height={600}
               className="rounded-2xl"
             />
           </div>
@@ -82,17 +98,17 @@ const SinglePostPage: React.FC<SinglePostPageProps> = ({ post }) => {
           <h1 className="mb-4 text-sm font-medium">Author</h1>
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-8">
-              {post.user.img && (
+              {data.user.img && (
                 <Image
                   alt="user-img"
-                  src={post.user.img}
+                  src={data.user.img}
                   className="w-12 h-12 rounded-full object-cover"
                   width={48}
                   height={48}
                 />
               )}
               <Link href="#" className="text-blue-800">
-                {post.user.username}
+                {data.user.username}
               </Link>
             </div>
             <p className="text-sm text-gray-500">
@@ -117,7 +133,7 @@ const SinglePostPage: React.FC<SinglePostPageProps> = ({ post }) => {
               </Link>
             </div>
           </div>
-          <PostMenuActions post={post} />
+          <PostMenuActions post={data} />
           <h1 className="mt-8 mb-4 text-sm font-medium">Categories</h1>
           <div className="flex flex-col gap-2 text-sm">
             <Link href="#" className="underline">
@@ -143,9 +159,7 @@ const SinglePostPage: React.FC<SinglePostPageProps> = ({ post }) => {
           <Search />
         </div>
       </div>
-      <Comments postId={post._id} />
+      <Comments postId={data._id} />
     </div>
   );
-};
-
-export default SinglePostPage;
+}

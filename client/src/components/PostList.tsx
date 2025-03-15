@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import PostListItem from './PostListItem';
@@ -10,12 +10,13 @@ const PostList = () => {
   const [posts, setPosts] = useState<any[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  console.log('posts', posts);
 
-  const fetchPosts = async () => {
+  const fetchPosts = useCallback(async () => {
     try {
       const searchParamsObj = Object.fromEntries(searchParams.entries());
       const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/posts`, {
-        params: { page, limit: 10, ...searchParamsObj },
+        params: { page, limit: 1, ...searchParamsObj },
       });
 
       setPosts((prevPosts) => [...prevPosts, ...res.data.posts]);
@@ -23,11 +24,11 @@ const PostList = () => {
     } catch (error) {
       console.error('Error fetching posts:', error);
     }
-  };
+  }, [page, searchParams]);
 
   useEffect(() => {
     fetchPosts();
-  }, [page]);
+  }, [page, fetchPosts]);
 
   return (
     <InfiniteScroll

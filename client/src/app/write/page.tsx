@@ -2,13 +2,17 @@
 
 import { useAuth, useUser } from '@clerk/clerk-react';
 import 'react-quill-new/dist/quill.snow.css';
-import ReactQuill from 'react-quill-new';
+// import ReactQuill from 'react-quill-new';
 import { useMutation, UseMutationResult } from '@tanstack/react-query';
 import axios, { AxiosResponse } from 'axios';
-import { useEffect, useState, FormEvent } from 'react';
+import { useEffect, useState, FormEvent, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import Upload from '@/components/Upload';
+import { Editor } from '@tinymce/tinymce-react';
+import { Editor as TinyMCEEditor } from 'tinymce';
+import Image from 'next/image';
+
 interface PostData {
   img: string;
   title: string;
@@ -17,13 +21,13 @@ interface PostData {
   content: string;
 }
 
-interface CoverImage {
-  filePath: string;
-}
+// interface CoverImage {
+//   filePath: string;
+// }
 
-interface Media {
-  url: string;
-}
+// interface Media {
+//   url: string;
+// }
 
 export default function Write() {
   const { isLoaded, isSignedIn } = useUser();
@@ -33,22 +37,50 @@ export default function Write() {
   const [video, setVideo] = useState<any>(null);
   const [progress, setProgress] = useState<number>(0);
   const router = useRouter();
-  const QuillEditor = ReactQuill as unknown as React.FC<any>;
+  // const QuillEditor = ReactQuill as unknown as React.FC<any>;
   const { getToken } = useAuth();
+  console.log('cover', cover);
+  console.log('img', img);
+
+  const editorRef = useRef<TinyMCEEditor | null>(null);
+  const log = () => {
+    if (editorRef.current) {
+      console.log(editorRef.current.getContent());
+    }
+  };
 
   useEffect(() => {
-    if (img) {
-      setValue((prev) => prev + `<p><image src="${img.url}"/></p>`);
+    if (img && editorRef.current) {
+      const editor = editorRef.current;
+      editor.setContent(
+        editor.getContent() + `<p><img src="${img.url}" /></p>`,
+      );
     }
   }, [img]);
 
   useEffect(() => {
-    if (video) {
-      setValue(
-        (prev) => prev + `<p><iframe class="ql-video" src="${video.url}"/></p>`,
+    if (video && editorRef.current) {
+      const editor = editorRef.current;
+      editor.setContent(
+        editor.getContent() +
+          `<p><iframe class="ql-video" src="${video.url}"></iframe></p>`,
       );
     }
   }, [video]);
+
+  // useEffect(() => {
+  //   if (img) {
+  //     setValue((prev) => prev + `<p><image src="${img.url}"/></p>`);
+  //   }
+  // }, [img]);
+
+  // useEffect(() => {
+  //   if (video) {
+  //     setValue(
+  //       (prev) => prev + `<p><iframe class="ql-video" src="${video.url}"/></p>`,
+  //     );
+  //   }
+  // }, [video]);
 
   const mutation: UseMutationResult<AxiosResponse, Error, PostData> =
     useMutation({
@@ -62,7 +94,7 @@ export default function Write() {
       },
       onSuccess: (res) => {
         toast.success('Post has been created');
-        // router.push(`/${res.data.slug}`);
+        router.push(`/single-post?slug=${res.data.slug}`);
       },
     });
 
@@ -78,18 +110,15 @@ export default function Write() {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
     const data: PostData = {
-      img: cover?.filePath || '',
+      img: cover?.url || '',
       title: formData.get('title') as string,
       category: formData.get('category') as string,
       desc: formData.get('desc') as string,
-      content: value,
+      content: editorRef.current?.getContent() || '', // Get content from editorRef
     };
     console.log('data', data);
-
     mutation.mutate(data);
   };
-
-  // console.log('mutation', mutation);
 
   return (
     <div className="h-[calc(100vh-64px)] md:h-[calc(100vh-80px)] flex flex-col gap-6">
@@ -100,6 +129,9 @@ export default function Write() {
             Add a cover image
           </button>
         </Upload>
+        {cover?.url && (
+          <Image src={cover?.url} alt="preview" width={50} height={50} />
+        )}
         <input
           className="text-4xl font-semibold bg-transparent outline-none"
           type="text"
@@ -137,13 +169,70 @@ export default function Write() {
               ▶️
             </Upload>
           </div>
-          <QuillEditor
+          {/* <Editor
+      apiKey='dkn2t8otuh47t8e3nz3cne9m9bhoyoz3zr5pu8py0w5zsygt'
+      init={{
+        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+      }}
+      initialValue="Welcome to TinyMCE!"
+    /> */}
+          {/* <Editor
+      apiKey={process.env.NEXT_PUBLIC_TINY_MCE_KEY} // Get your API key from TinyMCE
+      value={value}
+      onEditorChange={(newContent) => setValue(newContent)}
+      init={{
+        height: 500,
+        menubar: false,
+        plugins: ['link', 'table', 'lists'],
+        toolbar: 'undo redo | bold italic | link image | alignleft aligncenter alignright | numlist bullist',
+      }}
+    /> */}
+          <button onClick={log}>Log editor content</button>
+
+          <Editor
+            apiKey={process.env.NEXT_PUBLIC_TINY_MCE_KEY} // Get your API key from TinyMCE
+            onInit={(_evt, editor) => (editorRef.current = editor)}
+            initialValue=""
+            init={{
+              height: 500,
+              menubar: false,
+              plugins: [
+                'advlist',
+                'autolink',
+                'lists',
+                'link',
+                'image',
+                'charmap',
+                'preview',
+                'anchor',
+                'searchreplace',
+                'visualblocks',
+                'code',
+                'fullscreen',
+                'insertdatetime',
+                'media',
+                'table',
+                'code',
+                'help',
+                'wordcount',
+              ],
+              toolbar:
+                'undo redo | blocks | ' +
+                'bold italic forecolor | alignleft aligncenter ' +
+                'alignright alignjustify | bullist numlist outdent indent | ' +
+                'removeformat | help',
+              content_style:
+                'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+            }}
+          />
+          {/* <QuillEditor
             theme="snow"
             className="flex-1 rounded-xl bg-white shadow-md"
             value={value}
             onChange={setValue}
             readOnly={0 < progress && progress < 100}
-          />
+          /> */}
         </div>
         <button
           disabled={mutation.isPending || (0 < progress && progress < 100)}

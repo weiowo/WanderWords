@@ -1,19 +1,19 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Image from 'next/image'; // Make sure this is using Next.js' Image component
 import Link from 'next/link'; // Next.js Link for routing
 // import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
-import { SignedIn, SignedOut, UserButton, useAuth } from '@clerk/nextjs';
+import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 
 // Component type definition
 const Navbar: React.FC = () => {
   const [open, setOpen] = useState(false);
-  const { getToken } = useAuth();
+  // const { getToken } = useAuth();
 
-  useEffect(() => {
-    getToken().then((token) => console.log('token', token));
-  }, []);
+  // useEffect(() => {
+  //   getToken().then((token) => console.log('token', token));
+  // }, []);
 
   return (
     <div className="w-full h-16 md:h-20 flex items-center justify-between px-8">
