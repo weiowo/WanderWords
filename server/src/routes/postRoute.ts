@@ -4,7 +4,7 @@ import {
   getPost,
   createPost,
   deletePost,
-  // uploadAuth,
+  uploadAuth,
   featurePost,
 } from '../controllers/postController';
 import increaseVisit from '../middlewares/increaseVisit';
@@ -12,7 +12,7 @@ import Post from '../models/postModel';
 
 const router = express.Router();
 
-// router.get("/upload-auth", uploadAuth);
+router.get('/upload-auth', uploadAuth);
 router.get('/', getPosts);
 router.get('/:slug', increaseVisit, getPost);
 router.post('/', createPost);

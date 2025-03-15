@@ -14,11 +14,11 @@ dotenv.config();
 const app = express();
 
 // Enable CORS
-// app.use(
-//   cors({
-//     origin: process.env.CLIENT_URL,
-//   })
-// );
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+  }),
+);
 
 app.use(express.json());
 app.use(clerkMiddleware());
@@ -40,14 +40,14 @@ app.get('/protect', (req: any, res: any) => {
 });
 
 // Middleware to set response headers
-// app.use((req: Request, res: Response, next: NextFunction) => {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header(
-//     "Access-Control-Allow-Headers",
-//     "Origin, X-Requested-With, Content-Type, Accept"
-//   );
-//   next();
-// });
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept',
+  );
+  next();
+});
 
 // Define routes
 app.use('/users', userRouter);

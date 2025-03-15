@@ -1,44 +1,41 @@
 'use client';
-import PostListItem from './PostListItem';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { useSearchParams } from 'next/navigation'; // Use Next.js's useSearchParams
-
-const fetchPosts = async (pageParam: any, searchParams: URLSearchParams) => {
-  const searchParamsObj = Object.fromEntries(searchParams.entries()); // convert URLSearchParams to a plain object
-
-  console.log(searchParamsObj);
-
-  const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/posts`, {
-    params: { page: pageParam, limit: 10, ...searchParamsObj },
-  });
-  return res.data;
-};
+import PostListItem from './PostListItem';
+import { useSearchParams } from 'next/navigation';
 
 const PostList = () => {
-  const searchParams = useSearchParams(); // Get searchParams from Next.js
+  const searchParams = useSearchParams();
+  const [posts, setPosts] = useState<any[]>([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
-  const { data, error, fetchNextPage, hasNextPage, isFetching } =
-    useInfiniteQuery({
-      queryKey: ['posts', searchParams.toString()],
-      queryFn: ({ pageParam = 1 }) => fetchPosts(pageParam, searchParams),
-      initialPageParam: 1,
-      getNextPageParam: (lastPage, pages) =>
-        lastPage.hasMore ? pages.length + 1 : undefined,
-    });
+  const fetchPosts = async () => {
+    try {
+      const searchParamsObj = Object.fromEntries(searchParams.entries());
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/posts`, {
+        params: { page, limit: 10, ...searchParamsObj },
+      });
 
-  if (isFetching) return 'Loading...';
+      setPosts((prevPosts) => [...prevPosts, ...res.data.posts]);
+      setHasMore(res.data.hasMore);
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+    }
+  };
 
-  if (error) return 'Something went wrong!';
-
-  const allPosts = data?.pages?.flatMap((page) => page.posts) || [];
+  useEffect(() => {
+    fetchPosts();
+  }, [page]);
 
   return (
     <InfiniteScroll
-      dataLength={allPosts.length}
-      next={fetchNextPage}
-      hasMore={!!hasNextPage}
+      dataLength={posts.length}
+      next={() => {
+        setPage((prevPage) => prevPage + 1);
+      }}
+      hasMore={hasMore}
       loader={<h4>Loading more posts...</h4>}
       endMessage={
         <p>
@@ -46,7 +43,7 @@ const PostList = () => {
         </p>
       }
     >
-      {allPosts.map((post) => (
+      {posts.map((post) => (
         <PostListItem key={post._id} post={post} />
       ))}
     </InfiniteScroll>

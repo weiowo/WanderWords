@@ -6,10 +6,9 @@ import ReactQuill from 'react-quill-new';
 import { useMutation, UseMutationResult } from '@tanstack/react-query';
 import axios, { AxiosResponse } from 'axios';
 import { useEffect, useState, FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
-// import Upload from "../components/Upload";
-
+import Upload from '@/components/Upload';
 interface PostData {
   img: string;
   title: string;
@@ -29,12 +28,12 @@ interface Media {
 export default function Write() {
   const { isLoaded, isSignedIn } = useUser();
   const [value, setValue] = useState<string>('');
-  const [cover, setCover] = useState<CoverImage | null>(null);
-  const [img, setImg] = useState<Media | null>(null);
-  const [video, setVideo] = useState<Media | null>(null);
+  const [cover, setCover] = useState<any>(null);
+  const [img, setImg] = useState<any>(null);
+  const [video, setVideo] = useState<any>(null);
   const [progress, setProgress] = useState<number>(0);
-
-  const navigate = useNavigate();
+  const router = useRouter();
+  const QuillEditor = ReactQuill as unknown as React.FC<any>;
   const { getToken } = useAuth();
 
   useEffect(() => {
@@ -55,7 +54,7 @@ export default function Write() {
     useMutation({
       mutationFn: async (newPost: PostData) => {
         const token = await getToken();
-        return axios.post(`${import.meta.env.VITE_API_URL}/posts`, newPost, {
+        return axios.post(`${process.env.NEXT_PUBLIC_API_URL}/posts`, newPost, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -63,7 +62,7 @@ export default function Write() {
       },
       onSuccess: (res) => {
         toast.success('Post has been created');
-        navigate(`/${res.data.slug}`);
+        // router.push(`/${res.data.slug}`);
       },
     });
 
@@ -78,7 +77,6 @@ export default function Write() {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
-
     const data: PostData = {
       img: cover?.filePath || '',
       title: formData.get('title') as string,
@@ -86,19 +84,22 @@ export default function Write() {
       desc: formData.get('desc') as string,
       content: value,
     };
+    console.log('data', data);
 
     mutation.mutate(data);
   };
+
+  // console.log('mutation', mutation);
 
   return (
     <div className="h-[calc(100vh-64px)] md:h-[calc(100vh-80px)] flex flex-col gap-6">
       <h1 className="text-cl font-light">Create a New Post</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-6 flex-1 mb-6">
-        {/* <Upload type="image" setProgress={setProgress} setData={setCover}>
-          <button className="w-max p-2 shadow-md rounded-xl text-sm text-gray-500 bg-white">
+        <Upload type="image" setProgress={setProgress} setData={setCover}>
+          <button className="cursor-pointer w-max p-2 shadow-md rounded-xl text-sm text-gray-500 bg-white">
             Add a cover image
           </button>
-        </Upload> */}
+        </Upload>
         <input
           className="text-4xl font-semibold bg-transparent outline-none"
           type="text"
@@ -129,14 +130,14 @@ export default function Write() {
         />
         <div className="flex flex-1 ">
           <div className="flex flex-col gap-2 mr-2">
-            {/* <Upload type="image" setProgress={setProgress} setData={setImg}>
+            <Upload type="image" setProgress={setProgress} setData={setImg}>
               🌆
             </Upload>
             <Upload type="video" setProgress={setProgress} setData={setVideo}>
               ▶️
-            </Upload> */}
+            </Upload>
           </div>
-          <ReactQuill
+          <QuillEditor
             theme="snow"
             className="flex-1 rounded-xl bg-white shadow-md"
             value={value}

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-// import ImageKit from "imagekit";
+import ImageKit from 'imagekit';
 import Post from '../models/postModel';
 import User from '../models/userModel';
 import { SortOrder } from 'mongoose';
@@ -76,6 +76,7 @@ export const createPost = async (
   res: Response,
 ): Promise<any> => {
   try {
+    console.log('createpost', req);
     const clerkUserId = req.auth?.userId;
     if (!clerkUserId) return res.status(401).json('Not authenticated!');
 
@@ -156,17 +157,17 @@ export const featurePost = async (
   }
 };
 
-// const imagekit = new ImageKit({
-//   urlEndpoint: process.env.IK_URL_ENDPOINT!,
-//   publicKey: process.env.IK_PUBLIC_KEY!,
-//   privateKey: process.env.IK_PRIVATE_KEY!,
-// });
+const imagekit = new ImageKit({
+  urlEndpoint: process.env.IK_URL_ENDPOINT!,
+  publicKey: process.env.IK_PUBLIC_KEY!,
+  privateKey: process.env.IK_PRIVATE_KEY!,
+});
 
-// export const uploadAuth = async (_req: Request, res: Response) => {
-//   try {
-//     const result = imagekit.getAuthenticationParameters();
-//     res.send(result);
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// };
+export const uploadAuth = async (_req: Request, res: Response) => {
+  try {
+    const result = imagekit.getAuthenticationParameters();
+    res.send(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
