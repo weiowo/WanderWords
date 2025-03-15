@@ -1,53 +1,74 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import PostListItem from './PostListItem';
 import { useSearchParams } from 'next/navigation';
 
 const PostList = () => {
   const searchParams = useSearchParams();
   const [posts, setPosts] = useState<any[]>([]);
-  const [page, setPage] = useState(1);
+  const [pageIndex, setPageIndex] = useState(1);
+  const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  console.log('posts', posts);
-
-  const fetchPosts = useCallback(async () => {
-    try {
-      const searchParamsObj = Object.fromEntries(searchParams.entries());
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/posts`, {
-        params: { page, limit: 1, ...searchParamsObj },
-      });
-
-      setPosts((prevPosts) => [...prevPosts, ...res.data.posts]);
-      setHasMore(res.data.hasMore);
-    } catch (error) {
-      console.error('Error fetching posts:', error);
-    }
-  }, [page, searchParams]);
+  const lastPostRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    async function fetchPosts() {
+      setLoading(true);
+      try {
+        const searchParamsObj = Object.fromEntries(searchParams.entries());
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/posts`,
+          {
+            params: { page: pageIndex, ...searchParamsObj },
+          },
+        );
+        if (pageIndex === 1) {
+          setPosts(res.data.posts);
+        } else if (res.data.posts.length > 0) {
+          setPosts((prevPosts) => [...prevPosts, ...res.data.posts]);
+        } else {
+          setHasMore(false);
+        }
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
     fetchPosts();
-  }, [page, fetchPosts]);
+  }, [pageIndex, searchParams]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && hasMore && posts?.length > 0) {
+          setPageIndex((prev) => prev + 1);
+        }
+      },
+      { threshold: 0.1 },
+    );
+
+    if (lastPostRef.current) {
+      observer.observe(lastPostRef.current);
+    }
+
+    return () => {
+      if (lastPostRef.current) {
+        observer.unobserve(lastPostRef.current);
+      }
+    };
+  }, [posts, hasMore]);
 
   return (
-    <InfiniteScroll
-      dataLength={posts.length}
-      next={() => {
-        setPage((prevPage) => prevPage + 1);
-      }}
-      hasMore={hasMore}
-      loader={<h4>Loading more posts...</h4>}
-      endMessage={
-        <p>
-          <b>All posts loaded!</b>
-        </p>
-      }
-    >
+    <div>
       {posts.map((post) => (
         <PostListItem key={post._id} post={post} />
       ))}
-    </InfiniteScroll>
+      {loading && <div>loading...</div>}
+      {hasMore && <div className="h-[10px] trigger" ref={lastPostRef} />}
+    </div>
   );
 };
 

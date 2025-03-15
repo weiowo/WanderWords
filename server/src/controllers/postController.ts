@@ -18,7 +18,7 @@ interface AuthenticatedRequest extends Request {
 export const getPosts = async (req: Request, res: Response): Promise<any> => {
   try {
     const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 2;
+    const limit = parseInt(req.query.limit as string) || 1;
 
     const query: any = {};
     if (req.query.cat) query.category = req.query.cat;
@@ -59,10 +59,11 @@ export const getPosts = async (req: Request, res: Response): Promise<any> => {
 };
 
 export const getPost = async (req: Request, res: Response): Promise<any> => {
+  console.log('req', req);
   try {
     const post = await Post.findOne({ slug: req.params.slug }).populate(
       'user',
-      'username img',
+      'username img clerkUserId',
     );
     if (!post) return res.status(404).json('Post not found!');
     res.status(200).json(post);

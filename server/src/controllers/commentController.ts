@@ -21,7 +21,7 @@ export const getPostComments = async (
 ): Promise<void> => {
   try {
     const comments = await Comment.find({ post: req.params.postId })
-      .populate('user', 'username img')
+      .populate('user', 'username img clerkUserId')
       .sort({ createdAt: -1 });
 
     res.json(comments);

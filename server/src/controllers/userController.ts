@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import User from '../models/userModel';
 
-// Define custom request with auth property
 interface AuthRequest extends Request {
   auth?: {
     userId: string;
@@ -71,7 +70,6 @@ export const savePost = async (
       res.status(404).json({ message: 'User not found' });
       return;
     }
-
     // Check if post is already saved
     const isSaved = user.savedPosts.some((p) => p.toString() === postId);
 
