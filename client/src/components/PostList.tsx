@@ -1,6 +1,5 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
 import PostListItem from './PostListItem';
 import { useSearchParams } from 'next/navigation';
 
@@ -13,20 +12,29 @@ const PostList = () => {
   const lastPostRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    setPageIndex(1);
+    setHasMore(true);
+  }, [searchParams]);
+
+  useEffect(() => {
     async function fetchPosts() {
       setLoading(true);
       try {
         const searchParamsObj = Object.fromEntries(searchParams.entries());
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/posts`,
-          {
-            params: { page: pageIndex, ...searchParamsObj },
-          },
-        );
+        const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/posts`);
+        url.searchParams.append('page', pageIndex.toString());
+        Object.entries(searchParamsObj).forEach(([key, value]) => {
+          url.searchParams.append(key, value as string);
+        });
+        const res = await fetch(url.toString());
+        if (!res.ok) {
+          throw new Error('Error fetching posts');
+        }
+        const data = await res.json();
         if (pageIndex === 1) {
-          setPosts(res.data.posts);
-        } else if (res.data.posts.length > 0) {
-          setPosts((prevPosts) => [...prevPosts, ...res.data.posts]);
+          setPosts(data.posts);
+        } else if (data.posts.length > 0) {
+          setPosts((prevPosts) => [...prevPosts, ...data.posts]);
         } else {
           setHasMore(false);
         }
@@ -36,7 +44,6 @@ const PostList = () => {
         setLoading(false);
       }
     }
-
     fetchPosts();
   }, [pageIndex, searchParams]);
 

@@ -1,22 +1,52 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import Search from './Search';
 
 const SideMenu = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const sort = useSearchParams().get('sort');
   const cat = useSearchParams().get('cat');
+  const currentPath = usePathname();
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (sort !== e.target.value) {
-      router.push(`${window.location.pathname}?sort=${e.target.value}`);
+      const params = new URLSearchParams(searchParams.toString());
+      params.set('sort', e.target.value);
+      router.replace(`${currentPath}?${params.toString()}`);
     }
   };
 
+  // const handleCategoryChange = (category: string) => {
+  //   if (cat !== category) {
+  //     const params = new URLSearchParams(searchParams.toString());
+  //     params.set('cat', category);
+  //     router.replace(`${currentPath}?${params.toString()}`);
+  //   }
+  // };
+
   const handleCategoryChange = (category: string) => {
     if (cat !== category) {
-      router.push(`${window.location.pathname}?cat=${category}`);
+      // Create new params object instead of modifying existing one
+      const params = new URLSearchParams();
+
+      // Only preserve essential parameters
+      params.set('cat', category);
+
+      // Preserve other important params if needed (like search or sort)
+      const sort = searchParams.get('sort');
+      if (sort) {
+        params.set('sort', sort);
+      }
+
+      const search = searchParams.get('search');
+      if (search) {
+        params.set('search', search);
+      }
+
+      // Replace URL with clean parameters
+      router.replace(`${currentPath}?${params.toString()}`);
     }
   };
 
