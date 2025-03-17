@@ -49,12 +49,13 @@ export default function SinglePost() {
     queryKey: ['post', params],
     queryFn: () => fetchSinglePost(params as string),
   });
+  console.log('dataaaa', data);
 
   if (isPending) return 'loading';
   if (error) return 'something went wrong' + error.message;
   if (!data) return 'post not found';
   return (
-    <div className="max-w-[1200px] flex flex-col gap-8">
+    <div className="w-full max-w-[1200px] flex flex-col gap-8">
       {/* Detail */}
       <div className="flex gap-8">
         <div className="lg:w-3/5 flex flex-col gap-8">
@@ -63,11 +64,17 @@ export default function SinglePost() {
           </h1>
           <div className="flex items-center gap-2 text-gray-400 text-sm">
             <span>Written by</span>
-            <Link href="#" className="text-blue-800">
+            <Link
+              href={`/posts?author=${data.user.email}`}
+              className="text-blue-800"
+            >
               {data.user.username}
             </Link>
             <span>on</span>
-            <Link href="#" className="text-blue-800">
+            <Link
+              href={`/posts?cat=${data.category}`}
+              className="text-blue-800"
+            >
               {data.category}
             </Link>
             <span>{format(data.createdAt)}</span>
@@ -87,24 +94,30 @@ export default function SinglePost() {
         )}
       </div>
       <div className="flex">
-        <div dangerouslySetInnerHTML={{ __html: data.content }} />
+        <div
+          className="w-full min-w-[60%]"
+          dangerouslySetInnerHTML={{ __html: data.content }}
+        />
         {/* Content */}
         <div className="flex flex-col md:flex-row gap-12 justify-between">
           {/* Menu */}
           <div className="px-4 h-max sticky top-8">
             <h1 className="mb-4 text-sm font-medium">Author</h1>
             <div className="flex flex-col gap-4">
-              <div className="flex items-center gap-8">
+              <div className="flex items-center gap-3">
                 {data.user.img && (
                   <Image
                     alt="user-img"
                     src={data.user.img}
-                    className="w-12 h-12 rounded-full object-cover"
-                    width={48}
-                    height={48}
+                    className="w-9 h-9 rounded-full object-cover"
+                    width={36}
+                    height={36}
                   />
                 )}
-                <Link href="#" className="text-blue-800">
+                <Link
+                  href={`/posts?author=${data.user.email}`}
+                  className="text-blue-800"
+                >
                   {data.user.username}
                 </Link>
               </div>
@@ -115,16 +128,16 @@ export default function SinglePost() {
                 <Link href="#">
                   <Image
                     alt="facebook"
-                    width={60}
-                    height={60}
+                    width={30}
+                    height={30}
                     src="/images/facebook.svg"
                   />
                 </Link>
                 <Link href="#">
                   <Image
                     alt="instagram"
-                    width={60}
-                    height={60}
+                    width={30}
+                    height={30}
                     src="/images/instagram.svg"
                   />
                 </Link>

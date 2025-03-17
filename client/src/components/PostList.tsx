@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import PostListItem from './PostListItem';
 import { useSearchParams } from 'next/navigation';
 
-const PostList = () => {
+export default function PostList() {
   const searchParams = useSearchParams();
   const [posts, setPosts] = useState<any[]>([]);
   const [pageIndex, setPageIndex] = useState(1);
@@ -28,7 +28,7 @@ const PostList = () => {
         });
         const res = await fetch(url.toString());
         if (!res.ok) {
-          throw new Error('Error fetching posts');
+          return;
         }
         const data = await res.json();
         if (pageIndex === 1) {
@@ -68,15 +68,16 @@ const PostList = () => {
     };
   }, [posts, hasMore]);
 
+  console.log('postsss', posts);
   return (
     <div>
-      {posts.map((post) => (
-        <PostListItem key={post._id} post={post} />
-      ))}
+      {posts?.length > 0 ? (
+        posts.map((post) => <PostListItem key={post._id} post={post} />)
+      ) : (
+        <div className="text-black">No posts found.</div>
+      )}
       {loading && <div>loading...</div>}
       {hasMore && <div className="h-[10px] trigger" ref={lastPostRef} />}
     </div>
   );
-};
-
-export default PostList;
+}

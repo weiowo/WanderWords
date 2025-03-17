@@ -5,7 +5,7 @@ import PostList from '@/components/PostList';
 
 export default function Home() {
   return (
-    <div className="max-w-[1200px] mt-4 flex flex-col gap-4">
+    <div className="max-w-[1200px] w-full mt-4 flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-gray-800 text-2xl md:text-5xl lg:text-6xl font-bold">
@@ -39,7 +39,7 @@ export default function Home() {
             </text>
           </svg>
           <button
-            className="cursor-pointer absolute top-0 left-0 right-0 bottom-0 m-auto w-20 h-20 bg-[#ff981b] rounded-full flex items-center justify-center"
+            className="cursor-pointer absolute top-0 left-0 right-0 bottom-0 m-auto w-20 h-20 bg-[#cfb18d] rounded-full flex items-center justify-center"
             aria-label="Write your story"
           >
             <svg

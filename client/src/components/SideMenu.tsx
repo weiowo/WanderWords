@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import Search from './Search';
 
-const SideMenu = () => {
+export default function SideMenu() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const sort = useSearchParams().get('sort');
@@ -114,6 +114,4 @@ const SideMenu = () => {
       </div>
     </div>
   );
-};
-
-export default SideMenu;
+}

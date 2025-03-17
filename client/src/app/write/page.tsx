@@ -53,6 +53,9 @@ export default function Write() {
         toast.success('Post has been created');
         router.push(`/single-post?slug=${res.data.slug}`);
       },
+      onError: (error: any) => {
+        toast.error(error.response?.data || 'Error creating post');
+      },
     });
 
   if (!isLoaded) {
@@ -71,14 +74,13 @@ export default function Write() {
       title: formData.get('title') as string,
       category: formData.get('category') as string,
       desc: formData.get('desc') as string,
-      content: editorRef.current?.getContent() || '', // Get content from editorRef
+      content: editorRef.current?.getContent() || '',
     };
     mutation.mutate(data);
   };
 
   return (
     <div className="w-full max-w-[1200px] h-[calc(100vh-64px)] md:h-[calc(100vh-80px)] flex flex-col gap-6">
-      {/* <h1 className="text-cl font-light">Create a New Post</h1> */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-6 flex-1 mb-6">
         <input
           className="text-4xl font-semibold bg-transparent outline-none text-[#7e7e7e]"
@@ -188,7 +190,7 @@ export default function Write() {
         </div>
         <button
           disabled={mutation.isPending || (0 < progress && progress < 100)}
-          className="bg-[#ffa43c] text-white font-medium rounded-xl mb-10 p-2 w-36 disabled:bg-blue-400 disabled:cursor-not-allowed"
+          className="bg-[#a98f6f] text-white font-medium rounded-xl mb-10 p-2 w-36 disabled:bg-blue-400 disabled:cursor-not-allowed"
         >
           {mutation.isPending ? 'Loading...' : 'Send'}
         </button>

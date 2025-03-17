@@ -25,7 +25,7 @@ export const getPosts = async (req: Request, res: Response): Promise<any> => {
     if (req.query.search)
       query.title = { $regex: req.query.search, $options: 'i' };
     if (req.query.author) {
-      const user = await User.findOne({ username: req.query.author }).select(
+      const user = await User.findOne({ email: req.query.author }).select(
         '_id',
       );
       if (!user) return res.status(404).json('No post found!');
@@ -45,7 +45,7 @@ export const getPosts = async (req: Request, res: Response): Promise<any> => {
     if (req.query.featured === 'true') query.isFeatured = true;
 
     const posts = await Post.find(query)
-      .populate('user', 'username')
+      .populate('user')
       .sort(sortObj)
       .limit(limit)
       .skip((page - 1) * limit);
@@ -59,11 +59,11 @@ export const getPosts = async (req: Request, res: Response): Promise<any> => {
 };
 
 export const getPost = async (req: Request, res: Response): Promise<any> => {
-  console.log('req', req);
+  console.log('haha', req);
   try {
     const post = await Post.findOne({ slug: req.params.slug }).populate(
       'user',
-      'username img clerkUserId',
+      // 'username img clerkUserId fullName emailAddresses',
     );
     if (!post) return res.status(404).json('Post not found!');
     res.status(200).json(post);

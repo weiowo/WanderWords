@@ -3,7 +3,7 @@
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { KeyboardEvent, useState } from 'react';
 
-const Search: React.FC = () => {
+export default function Search() {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -45,6 +45,4 @@ const Search: React.FC = () => {
       />
     </div>
   );
-};
-
-export default Search;
+}

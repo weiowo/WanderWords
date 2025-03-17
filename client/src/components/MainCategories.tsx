@@ -10,7 +10,7 @@ export default function MainCategories() {
       <div className="flex-1 flex items-center justify-between flex-wrap">
         <Link
           href="/posts"
-          className="bg-blue-800 text-white rounded-full px-4 py-2"
+          className="bg-[#a98f6f] text-white font-bold rounded-full px-4 py-2"
         >
           All Posts
         </Link>

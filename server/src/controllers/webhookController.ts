@@ -19,7 +19,9 @@ interface ClerkUserData {
   id: string;
   username?: string;
   email_addresses: ClerkEmailAddress[];
-  profile_img_url?: string;
+  image_url?: string;
+  first_name: string;
+  last_name: string;
 }
 
 interface ClerkEvent {
@@ -70,9 +72,10 @@ export const clerkWebHook = async (
       const newUser = new User({
         clerkUserId: evt.data.id,
         username:
-          evt.data.username || evt.data.email_addresses[0]?.email_address,
+          evt.data.last_name + ' ' + evt.data.first_name ||
+          evt.data.email_addresses[0]?.email_address,
         email: evt.data.email_addresses[0]?.email_address,
-        img: evt.data.profile_img_url,
+        img: evt.data.image_url || '',
       });
       console.log('created');
       await newUser.save();

@@ -73,15 +73,12 @@ export default function Navbar() {
 
         {/* DESKTOP MENU */}
         <div className="hidden md:flex items-center gap-8 xl:gap-12 font-medium">
-          {/* <Link href="/">Home</Link>
-        <Link href="/posts?sort=trending">Trending</Link> */}
-          {/* <Link href="/posts?sort=popular">Most Popular</Link> */}
-          {/* <Link href="/">About</Link> */}
           <SignedOut>
-            <Link href="/sign-in">
-              <button className="py-2 px-4 rounded-3xl bg-blue-800 text-white">
-                signin
-              </button>
+            <Link
+              href="/sign-in"
+              className="py-2 px-4 text-sm rounded-3xl bg-[#a98f6f] text-white"
+            >
+              Sign In
             </Link>
           </SignedOut>
           <SignedIn>
