@@ -18,19 +18,24 @@
   - RESTFUL API
 
 ## Features
-
-![Create your travel schedules](./readme_assets/create_schedule.gif)
-
-#### `Add friends to schedules and chat with them.`
-- Invite friends to join schedules.
-- Chat with friends and get instant messages from them.
+#### Discover articles and featured articles written by others`
 <br/>
+![Discover articles and featured articles written by others](https://ik.imagekit.io/blogwanderword/home.gif?updatedAt=1742190583653)
 
-![Add friends to schedules](https://ik.imagekit.io/blogwanderword/home.gif?updatedAt=1742190583653))
-![Add friends to schedules]([https://ik.imagekit.io/blogwanderword/home.gif?updatedAt=1742190583653](https://ik.imagekit.io/blogwanderword/delete.mov/ik-video.mp4?updatedAt=1742191282686)))
+#### Search articles by keywords, categories, authors`
+<br/>
+![Search articles by keywords and categories](https://ik.imagekit.io/blogwanderword/home.gif?updatedAt=1742190583653)
+
+#### Save, Feature, Delete articles based on user information`
+<br/>
+![Save, Feature, Delete articles based on user information](https://ik.imagekit.io/blogwanderword/delete.gif?updatedAt=1742192408807)
+
+#### Comment and delete comment based on user information`
+<br/>
+![Comment and delete comment based on user information](https://ik.imagekit.io/blogwanderword/comment.gif?updatedAt=1742192407215)
+
 ## Contact
-
-Feel free to contact if you have any suggestions!
+Feel free to contact!
 <br/>
 Weiwei WANG / wutamy77@gmail.com
 
