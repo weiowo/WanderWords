@@ -24,7 +24,6 @@ interface CommentProps {
 }
 
 export default function Comment({ comment, postId }: CommentProps) {
-  console.log('comment', comment);
   const { user } = useUser();
   const { getToken } = useAuth();
   const role = user?.publicMetadata?.role;

@@ -17,7 +17,6 @@ type Post = {
 
 export default function PostMenuActions({ post }: { post: Post }) {
   const { user } = useUser();
-  console.log('user', user);
   const { getToken } = useAuth();
   const router = useRouter();
   const [isFeatured, setIsFeatured] = useState(post.isFeatured || false); // State to track if the post is featured

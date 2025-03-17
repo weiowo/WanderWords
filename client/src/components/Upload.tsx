@@ -49,7 +49,6 @@ const Upload = ({ children, type, setProgress, setData }: UploadProps) => {
     toast.error('Image upload failed!');
   };
 
-  console.log('hererererere');
   const onSuccess = (res: unknown) => {
     console.log(res);
     setData(res);

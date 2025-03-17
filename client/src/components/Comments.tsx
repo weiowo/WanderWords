@@ -30,7 +30,6 @@ const fetchComments = async (postId: string): Promise<CommentType[]> => {
 
 const Comments: React.FC<CommentsProps> = ({ postId }) => {
   const { user } = useUser();
-  console.log('user', user);
   const { getToken } = useAuth();
 
   const { isLoading, error, data } = useQuery<CommentType[], Error>({

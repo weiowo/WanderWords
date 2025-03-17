@@ -24,10 +24,12 @@ interface PostListItemProps {
 }
 
 export default function PostListItem({ post }: PostListItemProps) {
-  console.log('post in postitem', post);
   return (
     <div className="flex flex-col xl:flex-row gap-8 mb-12">
-      <div className="md:hidden xl:block xl:w-2/5">
+      <Link
+        href={`/single-post?slug=${post.slug}`}
+        className="md:hidden xl:block xl:w-2/5"
+      >
         <Image
           src={post.img || '/images/default_img.webp'}
           alt={post.title}
@@ -35,9 +37,12 @@ export default function PostListItem({ post }: PostListItemProps) {
           width={600}
           height={250}
         />
-      </div>
+      </Link>
       <div className="flex flex-col gap-4 xl:w-2/3">
-        <Link href={`/${post.slug}`} className="text-4xl font-semibold">
+        <Link
+          href={`/single-post?slug=${post.slug}`}
+          className="text-4xl font-semibold"
+        >
           {post.title}
         </Link>
         <div className="flex items-center gap-2 text-gray-400 text-sm">

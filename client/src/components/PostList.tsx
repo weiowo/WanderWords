@@ -11,9 +11,11 @@ export default function PostList() {
   const [hasMore, setHasMore] = useState(true);
   const lastPostRef = useRef<HTMLDivElement | null>(null);
 
+  // Reset pageIndex and posts whenever searchParams change
   useEffect(() => {
     setPageIndex(1);
-    setHasMore(true);
+    setPosts([]); // Clear posts when searchParams change
+    setHasMore(true); // Reset the "hasMore" state
   }, [searchParams]);
 
   useEffect(() => {
@@ -32,11 +34,11 @@ export default function PostList() {
         }
         const data = await res.json();
         if (pageIndex === 1) {
-          setPosts(data.posts);
+          setPosts(data.posts); // Set posts to the fetched data if it's the first page
         } else if (data.posts.length > 0) {
-          setPosts((prevPosts) => [...prevPosts, ...data.posts]);
+          setPosts((prevPosts) => [...prevPosts, ...data.posts]); // Append to previous posts if it's not the first page
         } else {
-          setHasMore(false);
+          setHasMore(false); // If no more posts, set hasMore to false
         }
       } catch (error) {
         console.error('Error fetching posts:', error);
@@ -45,7 +47,7 @@ export default function PostList() {
       }
     }
     fetchPosts();
-  }, [pageIndex, searchParams]);
+  }, [pageIndex]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -68,7 +70,6 @@ export default function PostList() {
     };
   }, [posts, hasMore]);
 
-  console.log('postsss', posts);
   return (
     <div>
       {posts?.length > 0 ? (

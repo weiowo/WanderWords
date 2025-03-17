@@ -1,11 +1,11 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-// import Image from "./Image";
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'timeago.js';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface Post {
   img?: string;
@@ -32,7 +32,6 @@ export default function FeaturedPosts() {
     queryKey: ['featuredPosts'],
     queryFn: fetchPost,
   });
-  console.log('featured posts', data);
 
   if (isPending) return <p>Loading...</p>;
   if (error) return <p>Something went wrong! {error.message}</p>;
@@ -42,16 +41,17 @@ export default function FeaturedPosts() {
 
   return (
     <div className="mt-8 flex flex-col lg:flex-row gap-8">
-      <div className="w-full lg:w-1/2 flex flex-col gap-4">
-        {posts[0]?.img && (
-          <Image
-            alt="post"
-            src={posts[0].img}
-            className="rounded-3xl object-cover h-[470px]"
-            width={800}
-            height={300}
-          />
-        )}
+      <Link
+        href={`/single-post?slug=${posts[0]?.slug}`}
+        className="w-full lg:w-1/2 flex flex-col gap-4"
+      >
+        <Image
+          alt="post"
+          src={posts[0].img || `/images/default_img.webp`}
+          className="rounded-3xl object-cover h-[400px]"
+          width={800}
+          height={300}
+        />
         <div className="flex items-center gap-4">
           <h1 className="font-semibold lg:text-lg">01.</h1>
           <button
@@ -68,23 +68,25 @@ export default function FeaturedPosts() {
         >
           {posts[0].title}
         </button>
-      </div>
+      </Link>
 
       {/* Other Posts */}
       <div className="w-full lg:w-1/2 flex flex-col gap-4">
         {posts.slice(1, 4).map((post, index) => (
-          <div key={post.slug} className="lg:h-1/3 flex justify-between gap-4">
-            {post.img && (
-              <div className="w-1/3 aspect-video">
-                <Image
-                  alt="post"
-                  src={post.img}
-                  className="rounded-3xl object-cover w-full h-full"
-                  width={298}
-                  height={300}
-                />
-              </div>
-            )}
+          <Link
+            href={`/single-post?slug=${post.slug}`}
+            key={post.slug}
+            className="lg:h-1/3 flex justify-between gap-4"
+          >
+            <div className="w-1/3 aspect-video">
+              <Image
+                alt="post"
+                src={post.img || `/images/default_img.webp`}
+                className="rounded-2xl object-cover w-full h-full"
+                width={298}
+                height={300}
+              />
+            </div>
             <div className="w-2/3">
               <div className="flex items-center gap-4 text-sm lg:text-base mb-4">
                 <h1 className="font-semibold">0{index + 2}.</h1>
@@ -100,12 +102,12 @@ export default function FeaturedPosts() {
               </div>
               <button
                 onClick={() => router.push(`/posts/${post.slug}`)}
-                className="text-base sm:text-lg md:text-2xl lg:text-xl xl:text-2xl font-medium"
+                className="text-base sm:text-lg md:text-2xl lg:text-xl xl:text-2xl text-left font-medium"
               >
                 {post.title}
               </button>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

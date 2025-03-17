@@ -190,7 +190,7 @@ export default function Write() {
         </div>
         <button
           disabled={mutation.isPending || (0 < progress && progress < 100)}
-          className="bg-[#a98f6f] text-white font-medium rounded-xl mb-10 p-2 w-36 disabled:bg-blue-400 disabled:cursor-not-allowed"
+          className="bg-[#a98f6f] text-white font-medium rounded-xl mb-10 p-2 w-36 disabled:bg-blue-400 disabled:cursor-not-allowed cursor-pointer"
         >
           {mutation.isPending ? 'Loading...' : 'Send'}
         </button>

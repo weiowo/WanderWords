@@ -38,7 +38,6 @@ import { useSearchParams } from 'next/navigation';
 // };
 
 const fetchSinglePost = async (slug: string) => {
-  console.log('fetch query', slug);
   const res = axios.get(`${process.env.NEXT_PUBLIC_API_URL}/posts/${slug}`);
   return (await res).data;
 };
@@ -49,7 +48,6 @@ export default function SinglePost() {
     queryKey: ['post', params],
     queryFn: () => fetchSinglePost(params as string),
   });
-  console.log('dataaaa', data);
 
   if (isPending) return 'loading';
   if (error) return 'something went wrong' + error.message;
@@ -81,17 +79,15 @@ export default function SinglePost() {
           </div>
           <p className="text-gray-500 font-medium">{data.desc}</p>
         </div>
-        {data.img && (
-          <div className="hidden lg:block w-2/5">
-            <Image
-              alt="post-img"
-              src={data.img}
-              width={600}
-              height={300}
-              className="rounded-2xl w-[600px] h-[300px] object-cover"
-            />
-          </div>
-        )}
+        <div className="hidden lg:block w-2/5">
+          <Image
+            alt="post-img"
+            src={data.img || `/images/default_img.webp`}
+            width={600}
+            height={300}
+            className="rounded-2xl w-[600px] h-[300px] object-cover"
+          />
+        </div>
       </div>
       <div className="flex">
         <div
@@ -122,7 +118,7 @@ export default function SinglePost() {
                 </Link>
               </div>
               <p className="text-sm text-gray-500">
-                Lorem ipsum dolor sit amet consectetur
+                I write articles of web developments!
               </p>
               <div className="flex gap-2">
                 <Link href="#">
