@@ -71,9 +71,9 @@ export const clerkWebHook = async (
       console.log('create');
       const newUser = new User({
         clerkUserId: evt.data.id,
-        username:
-          evt.data.last_name + ' ' + evt.data.first_name ||
-          evt.data.email_addresses[0]?.email_address,
+        username: evt.data.last_name
+          ? evt.data.last_name + ' ' + evt.data.first_name
+          : evt.data.username || evt.data.email_addresses[0]?.email_address,
         email: evt.data.email_addresses[0]?.email_address,
         img: evt.data.image_url || '',
       });
