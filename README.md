@@ -27,7 +27,7 @@
 <br/>
 
 ![Add friends to schedules](https://ik.imagekit.io/blogwanderword/home.gif?updatedAt=1742190583653))
-
+![Add friends to schedules]([https://ik.imagekit.io/blogwanderword/home.gif?updatedAt=1742190583653](https://ik.imagekit.io/blogwanderword/delete.mov/ik-video.mp4?updatedAt=1742191282686)))
 ## Contact
 
 Feel free to contact if you have any suggestions!
