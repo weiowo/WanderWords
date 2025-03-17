@@ -124,9 +124,6 @@ export default function PostMenuActions({ post }: { post: Post }) {
           onClick={() => featureMutation.mutate()}
         >
           <span>{isFeatured ? 'Unfeature' : 'Feature'} this Post</span>
-          {/* {featureMutation.isPending && (
-            <span className="text-xs">(in progress)</span>
-          )} */}
         </div>
       )}
       {user && (post.user.clerkUserId === user.id || isAdmin) && (

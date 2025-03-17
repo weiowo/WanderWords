@@ -5,8 +5,16 @@ import PostList from '@/components/PostList';
 
 export default function Home() {
   return (
-    <div className="max-w-[1200px] mt-4 flex flex-col gap-4">
+    <div className="mt-4 flex flex-col gap-4">
+      {/* BREADCRUMB */}
+      {/* <div className="flex gap-4">
+        <Link href="/">Home</Link>
+        <span>•</span>
+        <span className="text-blue-800">Blogs and Articles</span>
+      </div> */}
+      {/* INTRODUCTION */}
       <div className="flex items-center justify-between">
+        {/* Titles */}
         <div>
           <h1 className="text-gray-800 text-2xl md:text-5xl lg:text-6xl font-bold">
             Unleash Your Creativity, <br /> Share Your Story
@@ -58,6 +66,7 @@ export default function Home() {
         </Link>
       </div>
       <MainCategories />
+      <div>featured</div>
       <FeaturedPosts />
       <div>
         <h1 className="my-8 text-2xl text-gray-600">Recent Posts</h1>

@@ -35,10 +35,8 @@ const authenticator = async (): Promise<AuthenticatorResponse> => {
     return { signature, expire, token };
   } catch (error: unknown) {
     if (error instanceof Error) {
-      // Now TypeScript knows `error` is an instance of `Error`
       throw new Error(`Authentication request failed: ${error.message}`);
     } else {
-      // Handle the case where `error` is not an instance of `Error`
       throw new Error('Authentication request failed: Unknown error');
     }
   }
@@ -46,22 +44,20 @@ const authenticator = async (): Promise<AuthenticatorResponse> => {
 
 const Upload = ({ children, type, setProgress, setData }: UploadProps) => {
   const ref = useRef<HTMLInputElement | null>(null);
-
   const onError = (err: any) => {
     console.log(err);
     toast.error('Image upload failed!');
   };
 
+  console.log('hererererere');
   const onSuccess = (res: unknown) => {
     console.log(res);
     setData(res);
   };
-
   const onUploadProgress = (progress: { loaded: number; total: number }) => {
     console.log(progress);
     setProgress(Math.round((progress.loaded / progress.total) * 100));
   };
-  //console.log("process.env.NEXT_PUBLIC_IK_PUBLIC_KEY", process.env.NEXT_PUBLIC_IK_PUBLIC_KEY, process.env.IK_PRIVATE_KEY)
 
   return (
     <IKContext

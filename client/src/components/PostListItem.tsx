@@ -31,9 +31,9 @@ export default function PostListItem({ post }: PostListItemProps) {
           <Image
             src={post.img}
             alt={post.title}
-            className="rounded-2xl object-cover"
-            width={735}
-            height={415}
+            className="rounded-2xl object-cover w-[600px] h-[250px]"
+            width={600}
+            height={250}
           />
         </div>
       )}

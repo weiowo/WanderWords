@@ -42,14 +42,13 @@ export default function FeaturedPosts() {
 
   return (
     <div className="mt-8 flex flex-col lg:flex-row gap-8">
-      {/* First Post */}
       <div className="w-full lg:w-1/2 flex flex-col gap-4">
         {posts[0]?.img && (
           <Image
             alt="post"
             src={posts[0].img}
-            className="rounded-3xl object-cover"
-            width={895}
+            className="rounded-3xl object-cover h-[470px]"
+            width={800}
             height={300}
           />
         )}

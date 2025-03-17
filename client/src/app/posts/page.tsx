@@ -7,7 +7,7 @@ export default function PostListPage() {
   const [open, setOpen] = useState<boolean>(false);
 
   return (
-    <div>
+    <div className="max-w-[1200px]">
       <h1 className="mb-8 text-2xl">Development Blog</h1>
       <button
         onClick={() => setOpen((prev) => !prev)}

@@ -18,34 +18,10 @@ const SideMenu = () => {
     }
   };
 
-  // const handleCategoryChange = (category: string) => {
-  //   if (cat !== category) {
-  //     const params = new URLSearchParams(searchParams.toString());
-  //     params.set('cat', category);
-  //     router.replace(`${currentPath}?${params.toString()}`);
-  //   }
-  // };
-
   const handleCategoryChange = (category: string) => {
     if (cat !== category) {
-      // Create new params object instead of modifying existing one
-      const params = new URLSearchParams();
-
-      // Only preserve essential parameters
+      const params = new URLSearchParams(searchParams.toString());
       params.set('cat', category);
-
-      // Preserve other important params if needed (like search or sort)
-      const sort = searchParams.get('sort');
-      if (sort) {
-        params.set('sort', sort);
-      }
-
-      const search = searchParams.get('search');
-      if (search) {
-        params.set('search', search);
-      }
-
-      // Replace URL with clean parameters
       router.replace(`${currentPath}?${params.toString()}`);
     }
   };

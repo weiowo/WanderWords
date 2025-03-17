@@ -44,9 +44,7 @@ const fetchSinglePost = async (slug: string) => {
 };
 
 export default function SinglePost() {
-  //   if (!post) return <p>Post not found!</p>;
   const params = useSearchParams()?.get('slug') || '';
-  console.log('ue', useSearchParams(), params);
   const { isPending, error, data } = useQuery({
     queryKey: ['post', params],
     queryFn: () => fetchSinglePost(params as string),
@@ -55,10 +53,8 @@ export default function SinglePost() {
   if (isPending) return 'loading';
   if (error) return 'something went wrong' + error.message;
   if (!data) return 'post not found';
-
-  console.log('single data', data);
   return (
-    <div className="flex flex-col gap-8">
+    <div className="max-w-[1200px] flex flex-col gap-8">
       {/* Detail */}
       <div className="flex gap-8">
         <div className="lg:w-3/5 flex flex-col gap-8">
@@ -77,7 +73,6 @@ export default function SinglePost() {
             <span>{format(data.createdAt)}</span>
           </div>
           <p className="text-gray-500 font-medium">{data.desc}</p>
-          <div dangerouslySetInnerHTML={{ __html: data.content }} />
         </div>
         {data.img && (
           <div className="hidden lg:block w-2/5">
@@ -85,78 +80,81 @@ export default function SinglePost() {
               alt="post-img"
               src={data.img}
               width={600}
-              height={600}
-              className="rounded-2xl"
+              height={300}
+              className="rounded-2xl w-[600px] h-[300px] object-cover"
             />
           </div>
         )}
       </div>
-      {/* Content */}
-      <div className="flex flex-col md:flex-row gap-12 justify-between">
-        {/* Menu */}
-        <div className="px-4 h-max sticky top-8">
-          <h1 className="mb-4 text-sm font-medium">Author</h1>
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-8">
-              {data.user.img && (
-                <Image
-                  alt="user-img"
-                  src={data.user.img}
-                  className="w-12 h-12 rounded-full object-cover"
-                  width={48}
-                  height={48}
-                />
-              )}
-              <Link href="#" className="text-blue-800">
-                {data.user.username}
+      <div className="flex">
+        <div dangerouslySetInnerHTML={{ __html: data.content }} />
+        {/* Content */}
+        <div className="flex flex-col md:flex-row gap-12 justify-between">
+          {/* Menu */}
+          <div className="px-4 h-max sticky top-8">
+            <h1 className="mb-4 text-sm font-medium">Author</h1>
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-8">
+                {data.user.img && (
+                  <Image
+                    alt="user-img"
+                    src={data.user.img}
+                    className="w-12 h-12 rounded-full object-cover"
+                    width={48}
+                    height={48}
+                  />
+                )}
+                <Link href="#" className="text-blue-800">
+                  {data.user.username}
+                </Link>
+              </div>
+              <p className="text-sm text-gray-500">
+                Lorem ipsum dolor sit amet consectetur
+              </p>
+              <div className="flex gap-2">
+                <Link href="#">
+                  <Image
+                    alt="facebook"
+                    width={60}
+                    height={60}
+                    src="/images/facebook.svg"
+                  />
+                </Link>
+                <Link href="#">
+                  <Image
+                    alt="instagram"
+                    width={60}
+                    height={60}
+                    src="/images/instagram.svg"
+                  />
+                </Link>
+              </div>
+            </div>
+            <PostMenuActions post={data} />
+            <h1 className="mt-8 mb-4 text-sm font-medium">Categories</h1>
+            <div className="flex flex-col gap-2 text-sm">
+              <Link href="#" className="underline">
+                All
+              </Link>
+              <Link href="#" className="underline">
+                Web Design
+              </Link>
+              <Link href="#" className="underline">
+                Development
+              </Link>
+              <Link href="#" className="underline">
+                Databases
+              </Link>
+              <Link href="#" className="underline">
+                Search Engines
+              </Link>
+              <Link href="#" className="underline">
+                Marketing
               </Link>
             </div>
-            <p className="text-sm text-gray-500">
-              Lorem ipsum dolor sit amet consectetur
-            </p>
-            <div className="flex gap-2">
-              <Link href="#">
-                <Image
-                  alt="facebook"
-                  width={60}
-                  height={60}
-                  src="facebook.svg"
-                />
-              </Link>
-              <Link href="#">
-                <Image
-                  alt="instagram"
-                  width={60}
-                  height={60}
-                  src="instagram.svg"
-                />
-              </Link>
-            </div>
+            <h1 className="mt-8 mb-4 text-sm font-medium">Search</h1>
+            <Search />
           </div>
-          <PostMenuActions post={data} />
-          <h1 className="mt-8 mb-4 text-sm font-medium">Categories</h1>
-          <div className="flex flex-col gap-2 text-sm">
-            <Link href="#" className="underline">
-              All
-            </Link>
-            <Link href="#" className="underline">
-              Web Design
-            </Link>
-            <Link href="#" className="underline">
-              Development
-            </Link>
-            <Link href="#" className="underline">
-              Databases
-            </Link>
-            <Link href="#" className="underline">
-              Search Engines
-            </Link>
-            <Link href="#" className="underline">
-              Marketing
-            </Link>
-          </div>
-          <h1 className="mt-8 mb-4 text-sm font-medium">Search</h1>
-          <Search />
         </div>
       </div>
       <Comments postId={data._id} />
