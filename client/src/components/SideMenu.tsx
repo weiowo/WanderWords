@@ -79,7 +79,7 @@ export default function SideMenu() {
           className="underline cursor-pointer"
           onClick={() => handleCategoryChange('general')}
         >
-          All
+          General
         </span>
         <span
           className="underline cursor-pointer"
