@@ -10,7 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const sora = Sora({
   subsets: ['latin'],
-  weight: '400', // Regular weight
+  weight: '400',
 });
 
 export const metadata: Metadata = {
